@@ -5,6 +5,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketEvent;
 
+/*
+ * Not used Now
+ */
+
+
 public class BlockLavaPlayerBucketEvent  implements Listener{
 	
 	public BlockLava plugin;

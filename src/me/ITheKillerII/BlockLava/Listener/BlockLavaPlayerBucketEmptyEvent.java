@@ -16,10 +16,14 @@ public class BlockLavaPlayerBucketEmptyEvent  implements Listener{
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
+	private boolean getCancelled(Material bukkit){
+		return (bukkit.equals(Material.LAVA_BUCKET));
+	}
+	
 	@EventHandler
 	
 	public void onPlayerBucketEmpty (PlayerBucketEmptyEvent ev){
-		ev.setCancelled(ev.getBucket().equals(Material.LAVA_BUCKET));
+		ev.setCancelled(getCancelled(ev.getBucket()));
 	}
 
 }

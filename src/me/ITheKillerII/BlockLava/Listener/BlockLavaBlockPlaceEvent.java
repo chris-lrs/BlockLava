@@ -11,6 +11,10 @@ public class BlockLavaBlockPlaceEvent implements Listener{
 	
 	private BlockLava plugin;
 	
+	private boolean getCancel(Block b){
+		return (b.getTypeId() == 11)||(b.getTypeId() == 10);
+	}
+	
 	
 	/**
 	 *  @param p	BlockLava (Default use "this")
@@ -25,10 +29,7 @@ public class BlockLavaBlockPlaceEvent implements Listener{
 	public void onBlockPlace (BlockPlaceEvent ev){
 		
 		Block placedBlock = ev.getBlockPlaced();
-		
-		if ((placedBlock.getTypeId() == 11)||(placedBlock.getTypeId() == 10)){
-			ev.setCancelled(true);
-			}
+		ev.setCancelled(getCancel(placedBlock));
 	}
 
 }

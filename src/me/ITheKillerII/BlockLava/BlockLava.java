@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BlockLava extends JavaPlugin {
 	
 	private String author = "ITheKillerII";
-	private String version = "0.1-Schnapshot for Bukkit 1.3.1-R0.1 #2281";
+	private String version = "Version";
 	
 	//public PluginManager manager = this.getServer().getPluginManager();
 	
