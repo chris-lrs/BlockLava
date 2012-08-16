@@ -1,0 +1,9 @@
+name: LavaBlocker
+version: 0.2-Schnapshot with Bukkit 1.3.1-R1.0 #1521 for CraftBukkit 1.3.1-R1.0 #2317
+main: me.ITheKillerII.BlockLava.BlockLava
+author: ITheKillerII
+website: http://www.google.com
+commands:
+    info:
+        description: Show Informations about the Plugin
+        usage: /<command>
