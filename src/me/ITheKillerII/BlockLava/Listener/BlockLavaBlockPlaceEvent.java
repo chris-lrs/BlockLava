@@ -9,12 +9,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockLavaBlockPlaceEvent implements Listener{
 	
-	private BlockLava plugin;
-	
-	private boolean getCancel(Block b){
-		return (b.getTypeId() == 11)||(b.getTypeId() == 10);
-	}
-	
+	private BlockLava plugin;	
 	
 	/**
 	 *  @param p	BlockLava (Default use "this")
@@ -23,6 +18,14 @@ public class BlockLavaBlockPlaceEvent implements Listener{
 		this.plugin = p;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
+	
+	
+	
+	private boolean getCancel(Block b){
+		if ((b.getTypeId() == 11) || (b.getTypeId() == 10))			//check if its lava && you have the permission to use lava
+			return plugin.isBlocked();
+		return false;
+	}	
 	
 	@EventHandler
 	

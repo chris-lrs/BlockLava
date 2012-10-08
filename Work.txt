@@ -1,1 +1,7 @@
-16.8.2012: Change src for adding /toggle  --> not exported jet
+16.8.2012: 	Change src for adding /toggle  --> not exported jet
+
+8.10.2012: 	added Debug
+			added tools.java
+			changed src for adding /on + /off
+			
+			--> export as schnapshot-03

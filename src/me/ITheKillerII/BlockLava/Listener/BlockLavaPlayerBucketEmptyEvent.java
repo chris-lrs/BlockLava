@@ -17,7 +17,9 @@ public class BlockLavaPlayerBucketEmptyEvent  implements Listener{
 	}
 	
 	private boolean getCancelled(Material bukkit){
-		return (bukkit.equals(Material.LAVA_BUCKET));
+		if(bukkit.equals(Material.LAVA_BUCKET))				//check if its lava && you have the permission to use lava
+			return plugin.isBlocked();
+		return false;
 	}
 	
 	@EventHandler
