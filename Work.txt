@@ -5,3 +5,5 @@
 			changed src for adding /on + /off
 			
 			--> export as schnapshot-03
+			
+9.10.2012: added JavaDoc

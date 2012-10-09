@@ -9,6 +9,12 @@ import org.bukkit.event.player.PlayerBucketEvent;
  * Not used Now
  */
 
+/**
+ * <strong>NOT USED NOW</strong>
+ * @author ITheKillerII
+ *
+ */
+
 
 public class BlockLavaPlayerBucketEvent  implements Listener{
 	
