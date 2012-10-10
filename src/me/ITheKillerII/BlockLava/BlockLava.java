@@ -1,9 +1,11 @@
 package me.ITheKillerII.BlockLava;
 
 
-import me.ITheKillerII.BlockLava.Listener.*;
+import me.ITheKillerII.BlockLava.Listener.BlockLavaBlockPlaceEvent;
+import me.ITheKillerII.BlockLava.Listener.BlockLavaPlayerBucketEmptyEvent;
+import me.ITheKillerII.BlockLava.Tools.LanguageManager;
+import me.ITheKillerII.BlockLava.Tools.Tools;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,6 +31,11 @@ public class BlockLava extends JavaPlugin {
 	 */
 	private Boolean debug = false;
 	
+	/**
+	 * Creates the Language manager
+	 */
+	private LanguageManager lang = new LanguageManager(this);
+	
 //	public PluginManager manager = this.getServer().getPluginManager();
 	
 	//events 
@@ -49,22 +56,13 @@ public class BlockLava extends JavaPlugin {
 	 */
 	private String pathBlock = "Config.online.globalEnable";
 	/**
-	 * Path to the Online Message (String)
-	 */
-	private String pathEnableOnline = "Config.online.onlineMessage";
-	/**
 	 * Path to the debug enable (boolean)
 	 */
 	private String pathDebug = "Config.Debug.Enable";
-	
-		//offline
 	/**
-	 * Path to the Offline Message (String)
+	 * Path to the version
 	 */
-	private String pathEnableOffline = "Config.offline.offlineMessage";
-	
-		//debug
-	
+	private String pathVersion = "Config.NOTCHANGING.version";
 	
 // #################################################################################################################################################
 	
@@ -76,8 +74,8 @@ public class BlockLava extends JavaPlugin {
 	 * This Method creates the events
 	 */
 	private void registerEvents() {
-		blockPlace = new BlockLavaBlockPlaceEvent(this);
-		bucketEmpyEvent = new BlockLavaPlayerBucketEmptyEvent(this);
+		blockPlace = new BlockLavaBlockPlaceEvent(this , lang);
+		bucketEmpyEvent = new BlockLavaPlayerBucketEmptyEvent(this , lang);
 //		bucketEvent = new BlockLavaPlayerBucketEvent(this);
 		}
 	
@@ -100,28 +98,32 @@ public class BlockLava extends JavaPlugin {
 	 */
 	private void loadConfig()
 	{
-		this.getConfig().addDefault(pathEnableOnline, "[Lava Blocker] LavaBlocker is online!");
-		this.getConfig().addDefault(pathBlock, true);
-		this.getConfig().addDefault(pathDebug, false);
+		installConfig();
+		if (!(this.getConfig().getString(pathVersion).equals(version)))
+		{
+			this.getConfig().addDefault(pathBlock, true);
+			this.getConfig().addDefault(pathDebug, false);
+			this.getConfig().addDefault(pathVersion, version);
+			//save config
 		
-		//save config
-		
-		this.getConfig().options().copyDefaults(true);
-		this.saveConfig();
+			this.getConfig().options().copyDefaults(true);
+			this.saveConfig();
+		}
+	}
+	/**
+	 * This Method is the first time installation of the config
+	 */
+	private void installConfig()
+	{
+		if (!(this.getConfig().contains(pathVersion)))
+		{
+			lang.setDefault();
+			this.getConfig().addDefault(pathVersion, "FIRST START");
+			this.getConfig().options().copyDefaults(true);
+			this.saveConfig();
+		}
 	}
 	
-	/**
-	 * This Method sets the default values of the Configuration when the plugin is disabled
-	 */
-	private void loadConfigDisable()
-	{
-		this.getConfig().addDefault(pathEnableOffline, "[Lava Blocker] LavaBlocker is offline!");
-		
-		//save config
-		
-		this.getConfig().options().copyDefaults(true);
-		this.saveConfig();
-	}
 	
 // #################################################################################################################################################
 	
@@ -133,10 +135,8 @@ public class BlockLava extends JavaPlugin {
 	public void onDisable() 
 	{
 		//ini		
-		getAuthorAndVersionFomPluginYml();
-		loadConfigDisable();
-		
-		System.out.println(this.getConfig().getString(pathEnableOffline));
+		getAuthorAndVersionFomPluginYml();		
+		System.out.println(lang.getOfflineText());
 	}
 	
 	/**
@@ -145,15 +145,21 @@ public class BlockLava extends JavaPlugin {
 	public void onEnable() 
 	{
 		
-		//ini
-		debug=this.getConfig().getBoolean(pathDebug);
-		
+		//ini		
 		getAuthorAndVersionFomPluginYml();
 		loadConfig();
-		registerEvents();
 		
-		System.out.println(this.getConfig().getString(pathEnableOnline));
-		System.out.println("Block Lava: "+this.getConfig().getString(pathBlock));
+		debug=this.getConfig().getBoolean(pathDebug);
+		if (debug){
+			System.out.println("######################");
+			System.out.println("DEBUG MODE ENABLED !!!");
+			System.out.println("######################");
+			System.out.println();
+			System.out.println("[BlockLava] : "+this.getConfig().getString(pathBlock));
+		}
+		
+		registerEvents();
+		System.out.println(lang.getOnlineText());
 	}
 	
 	//Permission 
@@ -167,6 +173,15 @@ public class BlockLava extends JavaPlugin {
 		return (this.getConfig().getBoolean(pathBlock)); //pathBlock = global Enable (used with the commands)
 	}
 	
+	/**
+	 * Check if the player has the Permission fo a cmd
+	 * 
+	 * @return allow cmd
+	 */
+	public boolean getCmdPerm()
+	{
+		return true;		//return true because permissions system not activated now
+	}
 	
 	//Command
 	/**
@@ -178,35 +193,64 @@ public class BlockLava extends JavaPlugin {
 	 * 	/blocklava off      -> set the global blocing stade to <em>false</em>
 	 * @return Valid Command
 	 */
-	public boolean onCommand(CommandSender sender, Command command, String lString, String[] aStrings)
+	public boolean onCommand(CommandSender sender, Command command, String lString, String[] args)
 	{
 		
 		Player p = (Player)sender;
 		
 		if (command.getName().equalsIgnoreCase("BlockLava")){
-			if (aStrings.length == 0)
-				p.sendMessage(Tools.Help());
-			if (String.valueOf(aStrings) == "info"){
-				p.sendMessage(ChatColor.BLUE+"[LavaBlocker] "+ ChatColor.WHITE+"Lavablocker is enabled.  Info: "+author+ " " + version);
-				if (debug)
-					System.out.println("[LavaBlocker] Lavablocker is enabled.  Info: "+author+ " " + version);
-				return true;
-			}
+			if (args.length == 0)
+				return Tools.Help(p);
 			
-			if (String.valueOf(aStrings) == "on"){
+			if (args.length == 1){
+				
+				// /Blocklava info
+				
+				if (args[0].equals("info")&&getCmdPerm()){
+					p.sendMessage(lang.getInfoText(author, version));
+					if (debug)
+						System.out.println("DEBUG: CMD: /blocklava info");
+					return true;
+				}
+				
+				// /Blocklava on
+				
+				if (args[0].equals("on")&&getCmdPerm()){
 				this.getConfig().set(pathBlock, true);
 				this.saveConfig();
+				Tools.msgBlockStade(p, this.getConfig().getBoolean(pathBlock), lang);
 				if (debug)
 					System.out.println("DEBUG: pathBlock = "+this.getConfig().getBoolean(pathBlock));
 				return true;
-			}
-			
-			if (String.valueOf(aStrings) == "off"){
-				this.getConfig().set(pathBlock, false);
-				this.saveConfig();
-				if (debug)
-					System.out.println("DEBUG: pathBlock = "+this.getConfig().getBoolean(pathBlock));
-				return true;	
+				}
+				
+				// /Blocklava off
+				
+				if (args[0].equals("off")&&getCmdPerm()){
+					this.getConfig().set(pathBlock, false);
+					this.saveConfig();
+					Tools.msgBlockStade(p, this.getConfig().getBoolean(pathBlock), lang);
+					if (debug)
+						System.out.println("DEBUG: pathBlock = "+this.getConfig().getBoolean(pathBlock));
+					return true;	
+				}
+				
+				// /Blocklava toggle
+				
+				if (args[0].equals("toggle")){
+					boolean work = this.getConfig().getBoolean(pathBlock);
+					if (work)
+						this.getConfig().set(pathBlock, false);
+					else
+						this.getConfig().set(pathBlock, true);
+					
+					this.saveConfig();
+					Tools.msgBlockStade(p, this.getConfig().getBoolean(pathBlock), lang);
+					if (debug)
+						System.out.println("DEBUG: pathBlock = "+this.getConfig().getBoolean(pathBlock));
+					return true;	
+				}
+				
 			}
 		}
 		return false;

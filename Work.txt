@@ -7,3 +7,10 @@
 			--> export as schnapshot-03
 			
 9.10.2012: added JavaDoc
+
+10.10.2012: added Language Manager
+			added the cmd´s /Lavablocker on ; /Lavablocker off ; /Lavablocker toggle
+			finished JavaDoc
+			
+			--> export as schnapshot-04
+			--> JavaDoc Export

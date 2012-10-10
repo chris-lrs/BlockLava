@@ -1,6 +1,9 @@
 
-problem with the commands
+problem with the commands						 Done
 
 
-Adding Cmd: /toggle ; /disable ; /enable
-Adding Permissions
+Adding Cmd: /toggle ; /disable ; /enable         Done
+Adding Manager for changing Language			 Done
+Adding Join Message
+Adding Block Permissons
+Adding Cmd Permissions
